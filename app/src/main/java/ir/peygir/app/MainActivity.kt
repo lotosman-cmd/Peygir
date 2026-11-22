@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.net.Uri
+import android.provider.Settings
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -30,6 +31,7 @@ class MainActivity : Activity() {
     private lateinit var attemptText: TextView
     private lateinit var startButton: Button
     private lateinit var stopButton: Button
+    private lateinit var overlayButton: Button
     private var telephony: TelephonyManager? = null
 
     @Volatile private var active = false
@@ -79,6 +81,25 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         telephony = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
         buildScreen()
+        if (intent.getBooleanExtra("AUTO_START", false)) {
+            val number = intent.getStringExtra("PHONE_NUMBER").orEmpty()
+            if (number.isNotBlank()) {
+                phoneInput.setText(number)
+                handler.post { beginOrRequestPermissions() }
+            }
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (intent.getBooleanExtra("AUTO_START", false)) {
+            val number = intent.getStringExtra("PHONE_NUMBER").orEmpty()
+            if (number.isNotBlank()) {
+                phoneInput.setText(number)
+                beginOrRequestPermissions()
+            }
+        }
     }
 
     private fun buildScreen() {
@@ -121,6 +142,12 @@ class MainActivity : Activity() {
         }
         root.addView(startButton, buttonParams())
 
+        overlayButton = Button(this).apply {
+            text = "فعال‌سازی دکمه شناور کنار شماره‌گیر"
+            setOnClickListener { enableFloatingButton() }
+        }
+        root.addView(overlayButton, buttonParams())
+
         stopButton = Button(this).apply {
             text = "توقف"
             isEnabled = false
@@ -161,6 +188,24 @@ class MainActivity : Activity() {
 
     private fun buttonParams() = LinearLayout.LayoutParams(-1, -2).apply {
         topMargin = dp(8)
+    }
+
+    private fun enableFloatingButton() {
+        val number = PhoneNumberUtils.stripSeparators(phoneInput.text.toString().trim())
+        if (!number.matches(Regex("^\\+?[0-9]{5,20}$"))) {
+            phoneInput.error = "ابتدا شماره تلفن را وارد کنید"
+            return
+        }
+        getSharedPreferences("peygir", MODE_PRIVATE).edit().putString("phone_number", number).apply()
+        if (!Settings.canDrawOverlays(this)) {
+            status.text = "مجوز نمایش روی برنامه‌های دیگر را فعال کنید."
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+            return
+        }
+        val serviceIntent = Intent(this, FloatingButtonService::class.java)
+        if (android.os.Build.VERSION.SDK_INT >= 26) startForegroundService(serviceIntent)
+        else startService(serviceIntent)
+        status.text = "دکمه شناور فعال شد؛ آن را روی دکمه تماس شماره‌گیر جابه‌جا کنید."
     }
 
     private fun beginOrRequestPermissions() {
@@ -207,6 +252,7 @@ class MainActivity : Activity() {
         }
 
         targetNumber = cleanedNumber
+        getSharedPreferences("peygir", MODE_PRIVATE).edit().putString("phone_number", cleanedNumber).apply()
         active = true
         attempts = 0
         startButton.isEnabled = false
