@@ -28,7 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v1.2.${{ github.run_number }}"
-          gh release create "$TAG" "app/build/outputs/apk/debug/app-debug.apk#Peygir-v1.2.apk" \
-            --title "پیگیر نسخه ۱.۲" \
-            --notes "نسخه آزمایشی اصلاح‌شده. پیش از استفاده مداوم، روی دستگاه واقعی و با تماس‌های آزمایشی بررسی شود. تشخیص پاسخ از مدت ثبت‌شده در گزارش تماس استفاده می‌کند."
+          TAG="v1.3.${{ github.run_number }}"
+          gh release create "$TAG" "app/build/outputs/apk/debug/app-debug.apk#Peygir-v1.3.apk" \
+            --title "پیگیر نسخه ۱.۳" \
+            --notes "نسخه ۱.۳ شامل دکمه شناور قابل جابه‌جایی است. روی دستگاه واقعی آزمایش شود؛ تشخیص پاسخ تماس بر پایه گزارش تماس اندروید محدودیت دارد."
