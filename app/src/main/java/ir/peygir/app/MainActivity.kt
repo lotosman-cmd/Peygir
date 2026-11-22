@@ -88,7 +88,7 @@ class MainActivity : Activity() {
             inputType = 3
             textSize = 20f
             gravity = Gravity.CENTER
-            singleLine = true
+            setSingleLine(true)
         }
         root.addView(phoneInput, LinearLayout.LayoutParams(-1, -2))
         startButton = Button(this).apply {
