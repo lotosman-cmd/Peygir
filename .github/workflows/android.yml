@@ -22,13 +22,13 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Build debug APK
-        run: gradle assembleDebug
+      - name: Build APK
+        run: gradle clean assembleDebug
       - name: Publish direct APK download
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v0.1.${{ github.run_number }}"
-          gh release create "$TAG" app/build/outputs/apk/debug/app-debug.apk \
-            --title "Peygir APK $TAG" \
-            --notes "Test APK. Verify permissions and device behavior before relying on automatic redial."
+          TAG="v1.2.${{ github.run_number }}"
+          gh release create "$TAG" "app/build/outputs/apk/debug/app-debug.apk#Peygir-v1.2.apk" \
+            --title "پیگیر نسخه ۱.۲" \
+            --notes "نسخه آزمایشی اصلاح‌شده. پیش از استفاده مداوم، روی دستگاه واقعی و با تماس‌های آزمایشی بررسی شود. تشخیص پاسخ از مدت ثبت‌شده در گزارش تماس استفاده می‌کند."
