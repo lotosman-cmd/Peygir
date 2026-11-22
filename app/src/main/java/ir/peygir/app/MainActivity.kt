@@ -206,8 +206,8 @@ class MainActivity : Activity() {
             return
         }
         if (active) {
-            status.text = "تماس پاسخ داده نشد؛ تلاش بعدی تا ۲ ثانیه دیگر..."
-            handler.postDelayed({ if (active) makeCall(phoneInput.text.toString().trim()) }, retryDelayMs)
+            status.text = "تماس پاسخ داده نشد؛ تلاش بعدی..."
+            makeCall(phoneInput.text.toString().trim())
         }
     }
 
