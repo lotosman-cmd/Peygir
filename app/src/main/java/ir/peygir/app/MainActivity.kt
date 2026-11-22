@@ -314,11 +314,8 @@ class MainActivity : Activity() {
             return
         }
 
-        status.text = "تماس پاسخ داده نشد؛ تلاش بعدی تا ۲ ثانیه دیگر."
-        handler.removeCallbacks(retryRunnable)
-        handler.postDelayed({
-            if (active) makeCall()
-        }, retryDelayMs)
+        status.text = "تماس پاسخ داده نشد؛ تلاش بعدی آغاز می‌شود."
+        makeCall()
     }
 
     private fun retryCallLogLookupOrStop() {
