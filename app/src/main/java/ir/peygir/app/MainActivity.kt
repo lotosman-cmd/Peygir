@@ -266,7 +266,7 @@ class MainActivity : Activity() {
             val selection = "${CallLog.Calls.TYPE}=? AND ${CallLog.Calls.DATE}>=?"
             val args = arrayOf(
                 CallLog.Calls.OUTGOING_TYPE.toString(),
-                (attemptStartedAt - 1500L).toString()
+                (attemptStartedAt - 500L).toString()
             )
 
             val cursor = contentResolver.query(
