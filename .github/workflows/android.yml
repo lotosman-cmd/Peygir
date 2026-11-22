@@ -14,8 +14,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Install Android SDK components
-        run: yes | sdkmanager --licenses && sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 12266719
+          packages: 'platform-tools, platforms;android-35, build-tools;35.0.0'
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
@@ -28,4 +31,4 @@ jobs:
           TAG="v0.1.${{ github.run_number }}"
           gh release create "$TAG" app/build/outputs/apk/debug/app-debug.apk \
             --title "Peygir APK $TAG" \
-            --notes "Debug APK build. Starter shell only; automatic redial is not yet implemented."
+            --notes "Test APK. Verify permissions and device behavior before relying on automatic redial."
