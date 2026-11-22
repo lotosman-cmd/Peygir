@@ -9,8 +9,8 @@ android {
         applicationId = "ir.peygir.app"
         minSdk = 23
         targetSdk = 30
-        versionCode = 2
-        versionName = "1.1"
+        versionCode = 3
+        versionName = "1.2"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
